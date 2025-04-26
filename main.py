@@ -27,6 +27,18 @@ def escolherDieta():
 
     return dieta, ingredientes, restricao_dieta
 
+def receitaPassoAPasso(id):
+    url = f"{url_base}/recipes/{id}/analyzedInstructions"
+    resposta = requests.get(url, headers=headers)
+    instrucoes = resposta.json() # retorna lista 
+    
+    if instrucoes:
+        for passo in instrucoes[0]['steps']: # Primeiro dicionario da lista e queremos ver a chave steps
+            print(f"Passo {passo['number']}: {passo['step']}")
+    else:
+        print("Não foram encontradas instruções para esta receita.")
+
+
 def receitaComIngredientes(ingredientes, numero):
     ingredientes_formatado = ",".join(ingredientes) # join faz com que os elementos de uma lista sejam concatenados com a string que escolhemos
     url = f"{url_base}/recipes/findByIngredients"
@@ -37,9 +49,9 @@ def receitaComIngredientes(ingredientes, numero):
     for receita in receitas:
         print(f"Receita: {receita['title']}")
         print(f"Id: {receita['id']}")
-
-
-
+        escolha = input("Desejas ver o passo a passo desta receita (sim/nao)? ").lower()
+        if escolha == 'sim':
+            receitaPassoAPasso(receita['id'])
 
 def main():
     dieta, ingredientes, restricao_dieta = escolherDieta()

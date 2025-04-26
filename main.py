@@ -77,3 +77,4 @@ def main():
     procurarReceita(pesquisa,dieta,ingredientes,restricao_dieta,1)
 
 main()
+#FEITO

@@ -1,0 +1,32 @@
+# Ignorar ficheiros Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignorar ambientes virtuais
+venv/
+.env/
+.venv/
+
+# Ignorar ficheiros de configuração pessoais
+*.env
+*.DS_Store
+
+# Ignorar ficheiros de IDEs
+.idea/
+.vscode/
+
+# Ignorar ficheiros de sistema
+Thumbs.db
+.DS_Store
+
+# Ignorar ficheiros de pacotes
+*.egg-info/
+dist/
+build/
+
+# Ignorar ficheiros específicos do projeto
+Projeto2-03.Refeições_v2.1.pdf
+teste.json
+relatorio.tex
+base.py

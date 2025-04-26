@@ -1,5 +1,13 @@
 import requests
 
+# Variaveis globais
+# Spoonacular API
+url_base = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+api = "2ed4484312mshe3540b669887063p1f94ddjsnb3635e32bdbe"
+headers = {
+    "x-rapidapi-key" : api,
+    "x-rapidapi-host" : "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+}
 
 def escolherDieta():
     ingredientes = []
@@ -19,7 +27,22 @@ def escolherDieta():
 
     return dieta, ingredientes, restricao_dieta
 
+def receitaComIngredientes(ingredientes, numero):
+    ingredientes_formatado = ",".join(ingredientes) # join faz com que os elementos de uma lista sejam concatenados com a string que escolhemos
+    url = f"{url_base}/recipes/findByIngredients"
+    # TEM DE SER DICT!
+    query = {"ingredients": ingredientes_formatado, "number":str(numero)}
+    resposta = requests.get(url,headers=headers,params=query)
+    receitas = resposta.json()
+    for receita in receitas:
+        print(f"Receita: {receita['title']}")
+        print(f"Id: {receita['id']}")
+
+
+
+
 def main():
     dieta, ingredientes, restricao_dieta = escolherDieta()
+    receitaComIngredientes(ingredientes,1)
 
 main()

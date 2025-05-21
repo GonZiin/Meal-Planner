@@ -2,6 +2,7 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import requests
 from dotenv import load_dotenv
+from modulos import spoonacular_api
 import os
 
 load_dotenv()
@@ -27,28 +28,8 @@ def mostrar_busca_receita():
 @app.route('/buscar-receita', methods=['POST'])
 def processar_busca_receita():
     try:
-        pesquisa = request.form.get('pesquisa', '')
-        dieta = request.form.get('dieta', '')
-        ingredientes = request.form.get('ingredientes', '')
-        restricoes = request.form.get('restricoes', '')
-        numero = int(request.form.get('numero', 5))
-        
-        ingredientes_formatado = ingredientes.replace(' ', '').lower() if ingredientes else ''
-        restricoes_formatado = restricoes.replace(' ', '').lower() if restricoes else ''
-        
-        url = f"{url_base}/recipes/complexSearch"
-        query = {
-            "query": pesquisa, 
-            "diet": dieta, 
-            "intolerances": restricoes_formatado, 
-            "includeIngredients": ingredientes_formatado, 
-            "number": numero
-        }
-        
-        resposta = requests.get(url, headers=headers, params=query)
-        receitas = resposta.json().get("results", [])
-        
-        return render_template('resultados_busca.html', receitas=receitas)
+        resposta = spoonacular_api.buscar_receita_spoonacular() 
+        return render_template('resultados_busca.html', receitas=resposta)
     
     except Exception as e:
         flash(f"Erro ao buscar receitas: {str(e)}")
@@ -57,14 +38,7 @@ def processar_busca_receita():
 @app.route('/receita/<int:id>')
 def mostrar_receita(id):
     try:
-        url = f"{url_base}/recipes/{id}/information"
-        resposta = requests.get(url, headers=headers)
-        receita = resposta.json()
-        
-        url_instrucoes = f"{url_base}/recipes/{id}/analyzedInstructions"
-        resposta_instrucoes = requests.get(url_instrucoes, headers=headers)
-        instrucoes = resposta_instrucoes.json()
-        
+        receita, instrucoes = spoonacular_api.instrucoes_spoonacular(id)
         return render_template('receita_detalhes.html', receita=receita, instrucoes=instrucoes)
     
     except Exception as e:
@@ -78,15 +52,7 @@ def mostrar_busca_ingredientes():
 @app.route('/receitas-por-ingredientes', methods=['POST'])
 def processar_busca_ingredientes():
     try:
-        ingredientes = request.form.get('ingredientes', '')
-        numero = int(request.form.get('numero', 5))
-        
-        ingredientes_formatado = ingredientes.replace(' ', '').lower() if ingredientes else ''
-        
-        url = f"{url_base}/recipes/findByIngredients"
-        query = {"ingredients": ingredientes_formatado, "number": numero}
-        resposta = requests.get(url, headers=headers, params=query)
-        receitas = resposta.json()
+        receitas = spoonacular_api.buscar_receitas_ingredientes_spoonacular()
         
         return render_template('resultados_ingredientes.html', receitas=receitas)
     

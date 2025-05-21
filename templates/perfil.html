@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Perfil de Utilizador{% endblock %}
+{% block content %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col">
+        <nav aria-label="breadcrumb" class="bg-body-tertiary rounded-3 p-3 mb-4">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Perfil</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4 text-center">
+          <div class="card-body">
+            <img src="{{ url_for('static', filename='avatars/avatar' ~ (avatar or '1') ~ '.png') }}"
+              alt="Avatar" class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3">{{ user_name or "Utilizador" }}</h5>
+            {% if bmi %}
+              <p class="text-muted mb-1">IMC: {{ bmi }} ({{ bmi_status }})</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('perfil') }}">
+              <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" name="nome" id="nome" class="form-control" required value="{{ user_name }}">
+              </div>
+              <div class="mb-3">
+                <label for="peso" class="form-label">Peso (kg)</label>
+                <input type="number" step="0.1" name="peso" id="peso" class="form-control" required value="{{ peso }}">
+              </div>
+              <div class="mb-3">
+                <label for="altura" class="form-label">Altura (cm)</label>
+                <input type="number" name="altura" id="altura" class="form-control" required value="{{ altura }}">
+              </div>
+              <div class="mb-3">
+                <label for="calorias" class="form-label">Calorias diárias</label>
+                <input type="number" name="calorias" id="calorias" class="form-control" required value="{{ calorias }}">
+              </div>
+              <div class="mb-3">
+                <label for="dieta" class="form-label">Dieta</label>
+                <select class="form-select" name="dieta" id="dieta">
+                  <option value="" {% if dieta == "" %}selected{% endif %}>Nenhuma</option>
+                  <option value="vegetarian" {% if dieta == "vegetarian" %}selected{% endif %}>Vegetariana</option>
+                  <option value="vegan" {% if dieta == "vegan" %}selected{% endif %}>Vegana</option>
+                  <option value="paleo" {% if dieta == "paleo" %}selected{% endif %}>Paleo</option>
+                  <option value="keto" {% if dieta == "keto" %}selected{% endif %}>Keto</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Seleciona um avatar:</label>
+                <div class="d-flex gap-3">
+                  {% for i in range(1, 5) %}
+                    <div class="avatar-option" onclick="selectAvatar({{ i }})">
+                      <input type="radio" name="avatar" id="avatar{{ i }}" value="{{ i }}" {% if avatar == i|string %}checked{% endif %} hidden>
+                      <img src="{{ url_for('static', filename='avatars/avatar' ~ i ~ '.png') }}"
+                           id="avatarImg{{ i }}" class="rounded-circle avatar-img" 
+                           style="width: 70px; cursor: pointer; border: 2px solid {% if avatar == i|string %}green{% else %}transparent{% endif %};">
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mt-4">
+                <button type="submit" class="btn btn-success">Guardar Perfil</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .avatar-img:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: all 0.2s;
+  }
+</style>
+
+<script>
+  function selectAvatar(id) {
+    // Remove verde de todos os avatares
+    document.querySelectorAll('.avatar-img').forEach(img => {
+      img.style.border = '2px solid transparent';
+    });
+    
+    // Marca o avatar selecionado
+    document.getElementById('avatarImg' + id).style.border = '2px solid green';
+    
+    // Seleciona o input radio correspondente
+    document.getElementById('avatar' + id).checked = true;
+  }
+  
+  // Inicializa a seleção
+  document.addEventListener('DOMContentLoaded', function() {
+    {% if avatar %}
+      selectAvatar({{ avatar }});
+    {% else %}
+      selectAvatar(1); // Avatar padrão
+    {% endif %}
+  });
+</script>
+{% endblock %}

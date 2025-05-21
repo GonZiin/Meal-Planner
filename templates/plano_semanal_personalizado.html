@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Plano de Refeições Semanal</h1>
+    
+    {% if plano and plano.get('items') %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h2>{{ plano.get('name', 'Plano Semanal') }}</h2>
+            </div>
+            <div class="card-body">
+                <!-- Organizamos as refeições por dia -->
+                {% set dias = [1, 2, 3, 4, 5, 6, 7] %}
+                {% set nomes_dias = {
+                    1: 'Segunda-feira', 
+                    2: 'Terça-feira', 
+                    3: 'Quarta-feira', 
+                    4: 'Quinta-feira', 
+                    5: 'Sexta-feira', 
+                    6: 'Sábado',
+                    7: 'Domingo'
+                } %}
+                
+                {% set nome_refeicoes = {
+                    1: 'Café da manhã',
+                    2: 'Almoço',
+                    3: 'Jantar'
+                } %}
+                
+                {% for dia in dias %}
+                    <!-- Filtramos as refeições para o dia atual -->
+                    {% set refeicoes_do_dia = [] %}
+                    {% for item in plano.items %}
+                        {% if item.day == dia %}
+                            {% set refeicoes_do_dia = refeicoes_do_dia + [item] %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <!-- Se houver refeições para o dia, mostramos o card -->
+                    {% if refeicoes_do_dia %}
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h3>{{ nomes_dias[dia] }}</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    {% for item in refeicoes_do_dia|sort(attribute='slot') %}
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card h-100">
+                                                {% if item.value and item.value.id %}
+                                                <img src="https://spoonacular.com/recipeImages/{{ item.value.id }}-556x370.{{ item.value.imageType }}" 
+                                                     class="card-img-top" alt="{{ item.value.title }}">
+                                                {% endif %}
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        {% if item.value and item.value.title %}
+                                                            {{ item.value.title }}
+                                                        {% else %}
+                                                            Refeição não identificada
+                                                        {% endif %}
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        {% if item.slot in nome_refeicoes %}
+                                                            <span class="badge {% if item.slot == 1 %}bg-primary{% elif item.slot == 2 %}bg-success{% else %}bg-warning{% endif %}">
+                                                                {{ nome_refeicoes[item.slot] }}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">Refeição {{ item.slot }}</span>
+                                                        {% endif %}
+                                                    </p>
+                                                    {% if item.value and item.value.id %}
+                                                    <a href="{{ url_for('mostrar_receita', id=item.value.id) }}" 
+                                                       class="btn btn-primary">Ver Receita</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Não foi possível carregar o plano de refeições. Certifique-se de que a resposta da API contenha os campos necessários.
+        </div>
+    {% endif %}
+    
+    <div class="mt-3">
+        <a href="{{ url_for('mostrar_form_plano') }}" class="btn btn-secondary">Gerar Novo Plano</a>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Voltar à Página Inicial</a>
+    </div>
+</div>
+{% endblock %}

@@ -26,3 +26,4 @@ build/
 
 # Ignorar ficheiros específicos do projeto
 .env
+.gitignore

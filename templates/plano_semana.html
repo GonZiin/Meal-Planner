@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-success fw-bold">
+            <i class="fas fa-calendar-alt me-2"></i>Plano de Refeições Semanal
+        </h1>
+        <div class="alert alert-success d-flex align-items-center py-2 mb-0">
+            <i class="fas fa-leaf fa-lg me-2"></i>
+            <span class="fw-medium">Plano completo de refeições balanceadas</span>
+        </div>
+    </div>
+
+    <!-- Meal Plan Content -->
+    {% if plano and plano['items'] %}
+        <div class="row g-4">
+            {% for item in plano['items'] %}
+                {% set dia = loop.index %}
+                {% set refeicao = item['value'] %}
+                
+                <!-- Day Card -->
+                <div class="col-12">
+                    <div class="card border-success shadow-lg">
+                        <!-- Card Header -->
+                        <div class="card-header bg-success text-white py-3">
+                            <h3 class="mb-0 fw-semibold">
+                                <i class="fas fa-sun me-2"></i>Dia {{ item['day']|default(dia) }} - {{ refeicao.title|default('Refeição') }}
+                            </h3>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body p-4">
+                            <div class="row g-4">
+                                <!-- Image & Basic Info -->
+                                <div class="col-md-4">
+                                    <div class="card h-100 shadow-sm">
+                                        {% if refeicao.image %}
+                                            <img src="{{ refeicao.image }}" class="card-img-top meal-image" alt="{{ refeicao.title|default('Refeição') }}">
+                                        {% elif refeicao.id %}
+                                            <img src="https://spoonacular.com/recipeImages/{{ refeicao.id }}-556x370.jpg" 
+                                                 class="card-img-top meal-image" 
+                                                 alt="{{ refeicao.title|default('Refeição') }}">
+                                        {% else %}
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center py-5">
+                                                <i class="fas fa-image fa-3x text-secondary"></i>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-medium text-success">
+                                                {{ refeicao.title|default('Refeição') }}
+                                            </h5>
+                                            <div class="d-flex justify-content-between text-muted">
+                                                {% if refeicao.readyInMinutes is defined %}
+                                                <span>
+                                                    <i class="fas fa-clock me-1"></i>{{ refeicao.readyInMinutes }}min
+                                                </span>
+                                                {% endif %}
+                                                {% if refeicao.servings is defined %}
+                                                <span>
+                                                    <i class="fas fa-user-friends me-1"></i>{{ refeicao.servings }} porções
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        {% if refeicao.id %}
+                                        <div class="card-footer bg-transparent border-top-0 py-3">
+                                            <a href="{{ url_for('mostrar_receita', id=refeicao.id) }}" 
+                                               class="btn btn-success w-100 btn-lg">
+                                                <i class="fas fa-book-open me-2"></i>Ver Receita Completa
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Ingredients Section -->
+                                <div class="col-md-8">
+                                    <div class="h-100 d-flex flex-column">
+                                        <div class="card shadow-sm mb-4 flex-grow-1">
+                                            <div class="card-body">
+                                                <h4 class="text-success mb-3 fw-semibold">
+                                                    <i class="fas fa-carrot me-2"></i>Ingredientes
+                                                </h4>
+                                                {% if refeicao.extendedIngredients is defined and refeicao.extendedIngredients %}
+                                                    <div class="row g-3">
+                                                        {% for ingrediente in refeicao.extendedIngredients %}
+                                                            <div class="col-md-6">
+                                                                <div class="d-flex align-items-center p-3 bg-light rounded-3 border-start border-4 border-success">
+                                                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                                                    <div>
+                                                                        <div class="text-success small fw-medium">
+                                                                            {% if ingrediente.amount is defined %}
+                                                                                {{ ingrediente.amount|round(2) }}
+                                                                            {% endif %}
+                                                                            {% if ingrediente.unit is defined %}
+                                                                                {{ ingrediente.unit }}
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        <div class="text-dark small">
+                                                                            {{ ingrediente.name|default('Ingrediente') }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                <!-- This is the part we need to fix -->
+                                                {% elif refeicao.nutrients is defined or refeicao.calories is defined %}
+                                                    <div class="text-center py-4 bg-light rounded-3">
+                                                        <span class="text-muted">Receita simplificada no plano semanal. Clique em "Ver Receita Completa" para todos os detalhes.</span>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="text-center py-4 bg-light rounded-3">
+                                                        <span class="text-muted">Ingredientes não disponíveis</span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- Nutrition Section -->
+                                        {% if refeicao.nutrition is defined and refeicao.nutrition.nutrients is defined %}
+                                            <div class="card shadow-sm">
+                                                <div class="card-body">
+                                                    <h4 class="text-success mb-3 fw-semibold">
+                                                        <i class="fas fa-heartbeat me-2"></i>Informações Nutricionais
+                                                    </h4>
+                                                    <div class="row g-3">
+                                                        {% for nutrient in refeicao.nutrition.nutrients[:4] %}
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">{{ nutrient.name }}</div>
+                                                                <div class="h4 fw-bold">{{ nutrient.amount|round|int }}{{ nutrient.unit }}</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% elif refeicao.nutrients is defined %}
+                                            <div class="card shadow-sm">
+                                                <div class="card-body">
+                                                    <h4 class="text-success mb-3 fw-semibold">
+                                                        <i class="fas fa-heartbeat me-2"></i>Informações Nutricionais
+                                                    </h4>
+                                                    <div class="row g-3">
+                                                        {% if refeicao.nutrients.calories is defined %}
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">Calorias</div>
+                                                                <div class="h4 fw-bold">{{ refeicao.nutrients.calories|default('0')|round|int }}kcal</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if refeicao.nutrients.protein is defined %}
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">Proteínas</div>
+                                                                <div class="h4 fw-bold">{{ refeicao.nutrients.protein|default('0')|round|int }}g</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if refeicao.nutrients.carbohydrates is defined %}
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">Carboidratos</div>
+                                                                <div class="h4 fw-bold">{{ refeicao.nutrients.carbohydrates|default('0')|round|int }}g</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if refeicao.nutrients.fat is defined %}
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">Gorduras</div>
+                                                                <div class="h4 fw-bold">{{ refeicao.nutrients.fat|default('0')|round|int }}g</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% elif refeicao.calories is defined %}
+                                            <div class="card shadow-sm">
+                                                <div class="card-body">
+                                                    <h4 class="text-success mb-3 fw-semibold">
+                                                        <i class="fas fa-heartbeat me-2"></i>Informações Nutricionais
+                                                    </h4>
+                                                    <div class="row g-3">
+                                                        <div class="col-6 col-md-3">
+                                                            <div class="bg-success text-white p-3 rounded text-center">
+                                                                <div class="h6 mb-2">Calorias</div>
+                                                                <div class="h4 fw-bold">{{ refeicao.calories|default('0')|round|int }}kcal</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="card shadow-lg border-danger">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-utensils-slash fa-4x text-danger mb-4"></i>
+                <h3 class="text-danger mb-3">Plano de Refeições Não Encontrado</h3>
+                <p class="text-muted">Clique no botão abaixo para gerar um novo plano alimentar</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center gap-3 my-5">
+        <a href="{{ url_for('mostrar_form_plano') }}" 
+           class="btn btn-success btn-lg px-5 rounded-pill">
+            <i class="fas fa-magic me-2"></i>Novo Plano
+        </a>
+        <a href="{{ url_for('index') }}" 
+           class="btn btn-outline-success btn-lg px-5 rounded-pill">
+            <i class="fas fa-home me-2"></i>Página Inicial
+        </a>
+    </div>
+</div>
+
+<style>
+    .meal-image {
+        height: 250px;
+        object-fit: cover;
+        border-radius: 0.375rem 0.375rem 0 0;
+    }
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(25, 135, 84, 0.15);
+    }
+    .border-success {
+        border-color: rgba(25, 135, 84, 0.25) !important;
+    }
+</style>
+{% endblock %}

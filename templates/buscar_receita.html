@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Buscar Receitas{% endblock %}
-
 {% block content %}
 <div class="card mb-4">
     <div class="card-header bg-success text-white">
@@ -9,50 +7,83 @@
     </div>
     <div class="card-body">
         <form action="/buscar-receita" method="post">
+            <!-- Seletor de API -->
             <div class="mb-3">
-                <label for="pesquisa" class="form-label">O que desejas cozinhar? (input tem de ser em ingles)</label>
+                <label for="api" class="form-label">Escolha a fonte das receitas</label>
+                <select class="form-select" id="api" name="api" onchange="toggleApiFields()">
+                    <option value="spoonacular">Spoonacular (Mais Completo)</option>
+                    <option value="themealdb">TheMealDB (Menos Opçoes)</option>
+                </select>
+                <div class="form-text">Spoonacular oferece mais opções de filtros, TheMealDB é gratuito mas mais simples</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="pesquisa" class="form-label">O que desejas cozinhar? (input tem de ser em inglês)</label>
                 <input type="text" class="form-control" id="pesquisa" name="pesquisa" placeholder="Ex: soup, pizza, pasta" required>
             </div>
-            
-            <div class="mb-3">
-                <label for="dieta" class="form-label">Tipo de Dieta (opcional)</label>
-                <select class="form-select" id="dieta" name="dieta">
-                    <option value="">Qualquer</option>
-                    <option value="vegetarian">Vegetariana</option>
-                    <option value="vegan">Vegana</option>
-                    <option value="gluten free">Sem Glúten</option>
-                    <option value="ketogenic">Cetogênica</option>
-                    <option value="paleo">Paleo</option>
-                </select>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="ingredientes" class="form-label">Ingredientes para incluir (opcional)</label>
-                    <input type="text" class="form-control" id="ingredientes" name="ingredientes" placeholder="Ex: tomate, queijo, espinafre">
-                    <div class="form-text">Separe múltiplos ingredientes com vírgulas</div>
+
+            <!-- Campos específicos do Spoonacular -->
+            <div id="spoonacular-fields">
+                <div class="mb-3">
+                    <label for="dieta" class="form-label">Tipo de Dieta (opcional)</label>
+                    <select class="form-select" id="dieta" name="dieta">
+                        <option value="">Qualquer</option>
+                        <option value="vegetarian">Vegetariana</option>
+                        <option value="vegan">Vegana</option>
+                        <option value="gluten free">Sem Glúten</option>
+                        <option value="ketogenic">Cetogênica</option>
+                        <option value="paleo">Paleo</option>
+                    </select>
                 </div>
                 
-                <div class="col-md-6 mb-3">
-                    <label for="restricoes" class="form-label">Restrições/Intolerâncias (opcional)</label>
-                    <input type="text" class="form-control" id="restricoes" name="restricoes" placeholder="Ex: amendoim, laticínios">
-                    <div class="form-text">Separe múltiplas restrições com vírgulas</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ingredientes" class="form-label">Ingredientes para incluir (opcional)</label>
+                        <input type="text" class="form-control" id="ingredientes" name="ingredientes" placeholder="Ex: tomate, queijo, espinafre">
+                        <div class="form-text">Separe múltiplos ingredientes com vírgulas</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="restricoes" class="form-label">Restrições/Intolerâncias (opcional)</label>
+                        <input type="text" class="form-control" id="restricoes" name="restricoes" placeholder="Ex: amendoim, laticínios">
+                        <div class="form-text">Separe múltiplas restrições com vírgulas</div>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="mb-3">
                 <label for="numero" class="form-label">Número de receitas a exibir</label>
                 <input type="number" class="form-control" id="numero" name="numero" min="1" max="10" value="5">
             </div>
-            
+
             <button type="submit" class="btn btn-primary">Buscar Receitas</button>
         </form>
     </div>
-    
     <div class="card-footer">
         <div class="alert alert-success mb-0">
             <strong>Dica:</strong> Seja específico na sua busca para encontrar as melhores receitas que correspondam às suas preferências.
         </div>
     </div>
 </div>
+
+<script>
+function toggleApiFields() {
+    const apiSelect = document.getElementById('api');
+    const spoonacularFields = document.getElementById('spoonacular-fields');
+    
+    if (apiSelect.value === 'themealdb') {
+        spoonacularFields.style.display = 'none';
+        // Limpar campos específicos do Spoonacular quando TheMealDB é selecionado
+        document.getElementById('dieta').value = '';
+        document.getElementById('ingredientes').value = '';
+        document.getElementById('restricoes').value = '';
+    } else {
+        spoonacularFields.style.display = 'block';
+    }
+}
+
+// Esconder campos do Spoonacular por padrão se TheMealDB estiver selecionado
+document.addEventListener('DOMContentLoaded', function() {
+    toggleApiFields();
+});
+</script>
 {% endblock %}

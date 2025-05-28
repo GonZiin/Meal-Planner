@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
 from modulos import spoonacular_api, utils, themealdb_api
 import os
@@ -26,8 +26,7 @@ def processar_busca_receita():
         
         if api_escolhida == 'themealdb':
             resposta = themealdb_api.buscar_receita_themealdb()
-        else:
-            resposta = spoonacular_api.buscar_receita_spoonacular()
+        else:eceita_spoonacular()
             
         return render_template('resultados_busca.html', receitas=resposta, api_usada=api_escolhida)
     except Exception as e:

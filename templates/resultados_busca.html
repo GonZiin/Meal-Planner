@@ -13,31 +13,61 @@
         {% for receita in receitas %}
             <div class="col">
                 <div class="card h-100 recipe-card">
-                    {% if receita.image %}
-                        <img src="{{ receita.image }}" class="card-img-top" alt="{{ receita.title }}">
+                    {% if api_usada == 'themealdb' %}
+                        <!-- Template para TheMealDB -->
+                        {% if receita.strMealThumb %}
+                            <img src="{{ receita.strMealThumb }}" class="card-img-top" alt="{{ receita.strMeal }}">
+                        {% else %}
+                            <div class="card-img-top bg-light text-center py-5">
+                                <span class="text-muted">Sem imagem disponível</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ receita.strMeal }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Categoria: {{ receita.strCategory or 'Não especificada' }}
+                                    {% if receita.strArea %}
+                                        | Origem: {{ receita.strArea }}
+                                    {% endif %}
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/receita-mealdb/{{ receita.idMeal }}" class="btn btn-success w-100">Ver Receita</a>
+                        </div>
                     {% else %}
-                        <div class="card-img-top bg-light text-center py-5">
-                            <span class="text-muted">Sem imagem disponível</span>
+                        <!-- Template para Spoonacular -->
+                        {% if receita.image %}
+                            <img src="{{ receita.image }}" class="card-img-top" alt="{{ receita.title }}">
+                        {% else %}
+                            <div class="card-img-top bg-light text-center py-5">
+                                <span class="text-muted">Sem imagem disponível</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ receita.title }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    {% if receita.readyInMinutes %}
+                                        Tempo de preparo: {{ receita.readyInMinutes }} min
+                                    {% endif %}
+                                    {% if receita.servings %}
+                                        | Porções: {{ receita.servings }}
+                                    {% endif %}
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/receita/{{ receita.id }}" class="btn btn-success w-100">Ver Receita</a>
                         </div>
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ receita.title }}</h5>
-                        <p class="card-text">
-                            <small class="text-muted">
-                                Tempo de preparo: {{ receita.readyInMinutes }} min | 
-                                Porções: {{ receita.servings }}
-                            </small>
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/receita/{{ receita.id }}" class="btn btn-success w-100">Ver Receita</a>
-                    </div>
                 </div>
             </div>
         {% endfor %}
     </div>
 {% else %}
-    <div class="alert alert-success">
+    <div class="alert alert-warning">
         <p>Nenhuma receita encontrada com os critérios de busca fornecidos.</p>
         <p>Tente novamente com termos de busca diferentes ou critérios menos específicos.</p>
     </div>

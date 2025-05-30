@@ -78,7 +78,4 @@ Abrir [http://localhost:5000](http://localhost:5000) no navegador.
 
 Gonçalo Gomes – [goncalogomespessoal@outlook.pt](mailto:goncalogomespessoal@outlook.pt)
 
-```
 
-Se quiseres, posso ajudar a criar também uma versão mais detalhada ou com outra estrutura. Quer que faça?
-```

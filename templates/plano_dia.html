@@ -2,71 +2,84 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Plano de Refeições Diário</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Plano de Refeições Diário</h1>
+    <form action="/baixar_plano" method="post">
+        <input type="hidden" name="plano" value='{{ plano | tojson | safe }}'>
+        <input type="hidden" name="parametros" value='{{ parametros | tojson | safe }}'>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-download"></i> Descarregar Plano (PDF)
+        </button>
+    </form>
+    </div>
     
+    {% if 'nutrients' in plano %}
     <div class="card mb-4">
         <div class="card-header bg-success text-white">
             <h2>Resumo Nutricional</h2>
-            <p class="mb-0">Total de Calorias: {{ plano.nutrients.calories|round|int }} / {{ calorias }} kcal</p>
+            <p>Total de Calorias: {{ plano['nutrients']['calories'] }} / {{ calorias }} kcal</p>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <h4>Nutrientes</h4>
                     <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <li class="list-group-item d-flex justify-content-between">
                             Proteínas
-                            <span class="badge bg-primary rounded-pill">{{ plano.nutrients.protein|round|int }}g</span>
+                            <span class="badge bg-primary">{{ plano['nutrients'].get('protein', 0) }}g</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <li class="list-group-item d-flex justify-content-between">
                             Gorduras
-                            <span class="badge bg-primary rounded-pill">{{ plano.nutrients.fat|round|int }}g</span>
+                            <span class="badge bg-primary">{{ plano['nutrients'].get('fat', 0) }}g</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Carboidratos
-                            <span class="badge bg-primary rounded-pill">{{ plano.nutrients.carbohydrates|round|int }}g</span>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Hidratos de carbono
+                            <span class="badge bg-primary">{{ plano['nutrients'].get('carbohydrates', 0) }}g</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+    {% else %}
+    <p>Informação nutricional não disponível.</p>
+    {% endif %}
     
-    <h2 class="mb-3">Refeições do Dia</h2>
+    <h2>Refeições do Dia</h2>
     
     <div class="row">
-        {% for refeicao in plano.meals %}
+        {% for refeicao in plano['meals'] %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    {% if refeicao.image %}
-                        <img src="{{ refeicao.image }}" class="card-img-top" alt="{{ refeicao.title }}">
-                    {% else %}
-                        <img src="https://spoonacular.com/recipeImages/{{ refeicao.id }}-556x370.jpg" class="card-img-top" alt="{{ refeicao.title }}">
-                    {% endif %}
+                    <img src="https://spoonacular.com/recipeImages/{{ refeicao['id'] }}-556x370.jpg" class="card-img-top" alt="{{ refeicao['title'] }}">
                     
                     <div class="card-body">
-                        <h5 class="card-title">{{ refeicao.title }}</h5>
-                        <p class="card-text">
-                            <i class="fas fa-clock me-1"></i> Tempo de preparo: {{ refeicao.readyInMinutes }} minutos<br>
-                            <i class="fas fa-utensils me-1"></i> Porções: {{ refeicao.servings }}
-                        </p>
+                        <h5 class="recipe-title">{{ refeicao['title'] }}</h5>
+                        <p class="recipe-time">Tempo de preparação: {{ refeicao['readyInMinutes'] }} minutos</p>
+                        <p>Porções: {{ refeicao['servings'] }}</p>
                     </div>
                     
-                    <div class="card-footer bg-white border-top-0">
-                        <a href="{{ url_for('mostrar_receita', id=refeicao.id) }}" class="btn btn-primary w-100">Ver Receita</a>
+                    <div class="card-footer">
+                        <a href="/receita/{{ refeicao['id'] }}" class="btn btn-primary">Ver Receita</a>
+                        
+                        <!-- Botão para substituir esta receita -->
+                        <form action="/substituir_receita" method="post" class="mt-2">
+                            <input type="hidden" name="plano" value='{{ plano | tojson | safe }}'>
+                            <input type="hidden" name="parametros" value='{{ parametros | tojson | safe }}'>
+                            <input type="hidden" name="id_receita" value="{{ refeicao['id'] }}">
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="bi bi-arrow-repeat"></i> Substituir
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
     
-    <div class="mt-4 mb-5">
-        <a href="{{ url_for('mostrar_form_plano') }}" class="btn btn-secondary me-2">
-            <i class="fas fa-redo me-1"></i> Gerar Novo Plano
-        </a>
-        <a href="{{ url_for('index') }}" class="btn btn-primary">
-            <i class="fas fa-home me-1"></i> Voltar à Página Inicial
-        </a>
+    <div class="mt-4">
+        <a href="/plano" class="btn btn-secondary">Gerar Novo Plano</a>
+        <a href="/" class="btn btn-primary">Voltar à Página Principal</a>
     </div>
 </div>
 {% endblock %}

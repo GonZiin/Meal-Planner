@@ -10,45 +10,38 @@
     <div class="card-body">
         <form action="/plano-refeicoes" method="post">
             <div class="mb-3">
-                <label for="tempo" class="form-label">Período do Plano</label>
-                <select class="form-select" id="tempo" name="tempo" required>
-                    <option value="day">Um Dia</option>
-                    <option value="week">Uma Semana</option>
+                <label for="tempo" class="form-label">Duração do Plano</label>
+                <select class="form-select" id="tempo" name="tempo">
+                    <option value="day">Um dia</option>
+                    <option value="week">Uma semana</option>
                 </select>
             </div>
             
             <div class="mb-3">
                 <label for="calorias" class="form-label">Meta Diária de Calorias</label>
-                <input type="number" class="form-control" id="calorias" name="calorias" min="1000" max="4000" value="2000" required>
-                <div class="form-text">Recomendado: 1500-2500 calorias para adultos</div>
+                <input type="number" class="form-control" id="calorias" name="calorias" min="1000" max="4000" value="2000">
             </div>
             
             <div class="mb-3">
-                <label for="dieta" class="form-label">Dieta (opcional)</label>
+                <label for="dieta" class="form-label">Dieta</label>
                 <select class="form-select" id="dieta" name="dieta">
                     <option value="">Qualquer</option>
                     <option value="vegetarian">Vegetariana</option>
                     <option value="vegan">Vegana</option>
                     <option value="gluten free">Sem Glúten</option>
-                    <option value="ketogenic">Cetogênica</option>
+                    <option value="ketogenic">Cetogénica</option>
                     <option value="paleo">Paleo</option>
                 </select>
             </div>
             
             <div class="mb-3">
-                <label for="excluidos" class="form-label">Ingredientes a Excluir (opcional)</label>
-                <input type="text" class="form-control" id="excluidos" name="excluidos" placeholder="Ex: cebola, pimenta, amendoim">
+                <label for="excluidos" class="form-label">Ingredientes a Excluir</label>
+                <input type="text" class="form-control" id="excluidos" name="excluidos" placeholder="Ex: cebola, pimenta, glúten">
                 <div class="form-text">Separe múltiplos ingredientes com vírgulas</div>
             </div>
             
             <button type="submit" class="btn btn-primary">Gerar Plano de Refeições</button>
         </form>
-    </div>
-    
-    <div class="card-footer">
-        <div class="alert alert-success mb-0">
-            <strong>Dica:</strong> Um plano equilibrado deve incluir uma variedade de alimentos e nutrientes.
-        </div>
     </div>
 </div>
 {% endblock %}

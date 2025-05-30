@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Procurar Receitas{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h2>Procurar Receitas</h2>
+    </div>
+    <div class="card-body">
+        <form action="/procurar-receita" method="post">
+            <div class="mb-3">
+                <label for="api" class="form-label">Fonte das receitas</label>
+                <select class="form-select" name="api" id="api">
+                    <option value="spoonacular">Spoonacular</option>
+                    <option value="themealdb">TheMealDB</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="pesquisa" class="form-label">O que pretende cozinhar?</label>
+                <input type="text" class="form-control" name="pesquisa" id="pesquisa" placeholder="Ex: sopa, pizza, massa" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="dieta" class="form-label">Tipo de dieta</label>
+                <select class="form-select" name="dieta" id="dieta">
+                    <option value="">Qualquer</option>
+                    <option value="vegetarian">Vegetariana</option>
+                    <option value="vegan">Vegana</option>
+                    <option value="gluten free">Sem Glúten</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="numero" class="form-label">Número de receitas</label>
+                <input type="number" class="form-control" name="numero" id="numero" min="1" max="10" value="5">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Procurar Receitas</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

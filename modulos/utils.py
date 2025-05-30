@@ -1,4 +1,7 @@
-from flask import request, session  
+from flask import request, session, render_template
+from weasyprint import HTML
+from datetime import datetime
+import json
 
 def perfil_setup():
     nome = request.form['nome']
@@ -40,3 +43,23 @@ def perfil_recuperar_dados():
     bmi_status = session.get('bmi_status')
 
     return user_name, peso, altura, calorias, dieta, avatar, bmi, bmi_status
+
+def gerar_pdf_plano(plano_json, parametros_json):
+    plano = json.loads(plano_json)
+    parametros = json.loads(parametros_json) if parametros_json else {}
+    
+    tipo_plano = "diario" if 'meals' in plano else "semanal"
+    
+    dados = {
+        "tipo_plano": tipo_plano,
+        "data_geracao": datetime.now().strftime("%d/%m/%Y"),
+        "calorias_meta": parametros.get('calorias', 2000),
+        "dieta": parametros.get('dieta', 'Qualquer'),
+        "restricoes": parametros.get('excluidos', 'Nenhuma'),
+        "plano": plano
+    }
+    
+    html = render_template('plano_pdf.html', **dados)
+    
+    pdf = HTML(string=html, base_url=request.host_url).write_pdf()
+    return pdf

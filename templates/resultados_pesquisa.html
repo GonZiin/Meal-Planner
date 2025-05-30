@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Resultados da Busca{% endblock %}
+{% block title %}Resultados da Pesquisa{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Resultados da Busca</h2>
-    <a href="/buscar-receita" class="btn btn-outline-success">Nova Busca</a>
+    <h2>Resultados da Pesquisa</h2>
+    <a href="/procurar-receita" class="btn btn-outline-success">Nova Pesquisa</a>
 </div>
 
 {% if receitas %}
@@ -14,9 +14,8 @@
             <div class="col">
                 <div class="card h-100 recipe-card">
                     {% if api_usada == 'themealdb' %}
-                        <!-- Template para TheMealDB -->
                         {% if receita.strMealThumb %}
-                            <img src="{{ receita.strMealThumb }}" class="card-img-top" alt="{{ receita.strMeal }}">
+                            <img src="{{ receita.strMealThumb }}" class="card-img-top" alt="Imagem da receita {{ receita.strMeal }}">
                         {% else %}
                             <div class="card-img-top bg-light text-center py-5">
                                 <span class="text-muted">Sem imagem disponível</span>
@@ -37,9 +36,8 @@
                             <a href="/receita-mealdb/{{ receita.idMeal }}" class="btn btn-success w-100">Ver Receita</a>
                         </div>
                     {% else %}
-                        <!-- Template para Spoonacular -->
                         {% if receita.image %}
-                            <img src="{{ receita.image }}" class="card-img-top" alt="{{ receita.title }}">
+                            <img src="{{ receita.image }}" class="card-img-top" alt="Imagem da receita {{ receita.title }}">
                         {% else %}
                             <div class="card-img-top bg-light text-center py-5">
                                 <span class="text-muted">Sem imagem disponível</span>
@@ -50,7 +48,7 @@
                             <p class="card-text">
                                 <small class="text-muted">
                                     {% if receita.readyInMinutes %}
-                                        Tempo de preparo: {{ receita.readyInMinutes }} min
+                                        Tempo de preparação: {{ receita.readyInMinutes }} min
                                     {% endif %}
                                     {% if receita.servings %}
                                         | Porções: {{ receita.servings }}
@@ -68,8 +66,7 @@
     </div>
 {% else %}
     <div class="alert alert-warning">
-        <p>Nenhuma receita encontrada com os critérios de busca fornecidos.</p>
-        <p>Tente novamente com termos de busca diferentes ou critérios menos específicos.</p>
+        <p>Nenhuma receita encontrada com os critérios de pesquisa fornecidos.</p>
     </div>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Plano Alimentar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            color: #2e6c3f;
+            border-bottom: 2px solid #2e6c3f;
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+        .resumo {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .dia {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            page-break-inside: avoid;
+        }
+        .dia h2 {
+            color: #2e6c3f;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .refeicao {
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+        .refeicao-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .refeicao-info {
+            font-size: 10px;
+            color: #555;
+        }
+        .nutricao {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .recipe-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+        }
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <h1>Plano Alimentar</h1>
+    
+    <div class="resumo">
+        <p><strong>Data de geração:</strong> {{ data_geracao }}</p>
+        <p><strong>Calorias diárias alvo:</strong> {{ calorias_meta }} kcal</p>
+        <p><strong>Dieta:</strong> {{ dieta }}</p>
+        <p><strong>Restrições:</strong> {{ restricoes }}</p>
+    </div>
+
+    {% if tipo_plano == 'diario' %}
+        <h2>Refeições do Dia</h2>
+        
+        {% for refeicao in plano['meals'] %}
+            <div class="refeicao">
+                <div class="refeicao-title">{{ refeicao['title'] }}</div>
+                <img class="recipe-image" 
+                     src="https://spoonacular.com/recipeImages/{{ refeicao['id'] }}-556x370.jpg" 
+                     alt="{{ refeicao['title'] }}">
+                <div class="refeicao-info">
+                    <strong>Tempo de preparo:</strong> {{ refeicao['readyInMinutes'] }} minutos<br>
+                    <strong>Porções:</strong> {{ refeicao['servings'] }}
+                </div>
+            </div>
+        {% endfor %}
+        
+        {% if 'nutrients' in plano %}
+            <div class="nutricao">
+                <h2>Resumo Nutricional</h2>
+                <p><strong>Calorias:</strong> {{ plano['nutrients']['calories'] }} kcal</p>
+                <p><strong>Proteínas:</strong> {{ plano['nutrients']['protein'] }}g</p>
+                <p><strong>Gorduras:</strong> {{ plano['nutrients']['fat'] }}g</p>
+                <p><strong>Carboidratos:</strong> {{ plano['nutrients']['carbohydrates'] }}g</p>
+            </div>
+        {% endif %}
+        
+    {% else %}
+        {% set dias = {} %}
+        {% for item in plano['items'] %}
+            {% set dia = item['day'] %}
+            {% if dia not in dias %}
+                {% set _ = dias.update({dia: []}) %}
+            {% endif %}
+            {% set _ = dias[dia].append(item) %}
+        {% endfor %}
+        
+        {% for dia_num in dias.keys()|sort %}
+            <div class="dia">
+                <h2>Dia {{ dia_num }}</h2>
+                {% for item in dias[dia_num] %}
+                    {% set slot = item['slot'] %}
+                    {% set tipo_refeicao = "Pequeno-Almoço" if slot == 1 else "Almoço" if slot == 2 else "Jantar" %}
+                    {% set valor = item['value'] %}
+                    
+                    <div class="refeicao">
+                        <div class="refeicao-title">{{ tipo_refeicao }}: {{ valor['title'] }}</div>
+                        <img class="recipe-image" 
+                             src="https://spoonacular.com/recipeImages/{{ valor['id'] }}-556x370.jpg" 
+                             alt="{{ valor['title'] }}">
+                        <div class="refeicao-info">
+                            {% if 'readyInMinutes' in valor and valor['readyInMinutes'] > 0 %}
+                                <strong>Tempo de preparo:</strong> {{ valor['readyInMinutes'] }} minutos<br>
+                            {% endif %}
+                            {% if 'servings' in valor and valor['servings'] > 0 %}
+                                <strong>Porções:</strong> {{ valor['servings'] }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if loop.index % 2 == 0 %}
+                <div class="page-break"></div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %}Spoonacular Receitas - Início{% endblock %}
+{% block title %}EatFit - Início{% endblock %}
 
 {% block content %}
 <div class="jumbotron text-center my-4 p-5 bg-light rounded">
-    <h1 class="display-4">Bem-vindo</h1>
+    <h1 class="display-4">Bem-vindo ao EatFit</h1>
     <p class="lead">Encontre receitas deliciosas, planos de refeições e mais!</p>
     <hr class="my-4">
-    <p>Explore nossa aplicação para descobrir novas ideias culinárias adaptadas às suas preferências.</p>
+    <p>Projeto desenvolvido no âmbito da UC Laboratório de Programação</p>
 </div>
 
 <div class="row mt-5">
     <div class="col-md-4 mb-4">
         <div class="card h-100 recipe-card">
             <div class="card-body text-center">
-                <h5 class="card-title">Buscar Receitas</h5>
+                <h5 class="card-title">Procurar Receitas</h5>
                 <p class="card-text">Procure receitas por nome, dieta ou restrições alimentares.</p>
-                <a href="/buscar-receita" class="btn btn-primary">Começar</a>
+                <a href="/procurar-receita" class="btn btn-primary">Começar</a>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
         <div class="card h-100 recipe-card">
             <div class="card-body text-center">
                 <h5 class="card-title">Receitas por Ingredientes</h5>
-                <p class="card-text">Encontre receitas com os ingredientes que você já tem em casa.</p>
+                <p class="card-text">Encontre receitas com os ingredientes que já tens em casa.</p>
                 <a href="/receitas-por-ingredientes" class="btn btn-primary">Explorar</a>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <div class="card h-100 recipe-card">
             <div class="card-body text-center">
                 <h5 class="card-title">Plano de Refeições</h5>
-                <p class="card-text">Gere um plano de refeições personalizado baseado nos seus objetivos.</p>
+                <p class="card-text">Gera um plano de refeições personalizado.</p>
                 <a href="/plano-refeicoes" class="btn btn-primary">Criar Plano</a>
             </div>
         </div>

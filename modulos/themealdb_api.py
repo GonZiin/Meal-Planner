@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 from flask import request
 
 url_base = "https://themealdb.p.rapidapi.com"
@@ -11,7 +10,6 @@ headers = {
 }
 
 def configurar_themealdb():
-    """Atualiza as configurações da API com base nas variáveis de ambiente atuais."""
     global api, headers
     api = os.getenv('THEMEALDB_KEY')
     headers = {
@@ -20,19 +18,21 @@ def configurar_themealdb():
     }
     return headers
 
-def buscar_receita_themealdb():
-    """Busca receitas por nome no TheMealDB."""
+def procurar_receita_themealdb():
     pesquisa = request.form.get('pesquisa', '')
+    
+    numero_receitas = int(request.form.get('numero', 5))
+    
     url = f"{url_base}/search.php"
     query = {
         "s": pesquisa
     }
     resposta = requests.get(url, headers=headers, params=query)
-    receitas = resposta.json().get("meals", [])
-    return receitas
+    
+    todas_receitas = resposta.json().get("meals", [])
+    return todas_receitas[:numero_receitas]
 
 def instrucoes_themealdb(id):
-    """Obtém detalhes completos de uma receita específica pelo ID."""
     url = f"{url_base}/lookup.php"
     query = {
         "i": id

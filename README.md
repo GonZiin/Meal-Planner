@@ -1,238 +1,84 @@
-# Gerador de Planos de Refeições
+Claro! Aqui está o README simplificado em formato Markdown (.md):
 
-**Aplicação web desenvolvida em Flask para geração automática de planos alimentares personalizados**
+````md
+# Meal Planner
 
-Projecto académico desenvolvido no âmbito da UC Laboratório de Programação, utilizando Python, Flask e a API Spoonacular para criar planos de refeições adaptados às necessidades individuais de cada utilizador.
+Aplicação web em Flask para gerar planos de refeições personalizados usando a API Spoonacular.
 
 ---
 
 ## Funcionalidades
 
-### Gestão de Perfil
-- Registo personalizado com dados antropométricos (altura, peso)
-- Configuração de preferências alimentares e tipo de dieta
-- Definição de objectivos calóricos diários
-- Cálculo automático do IMC com interpretação dos resultados
-
-### Planeamento de Refeições
-- Geração de planos diários adaptados ao perfil do utilizador
-- Planos semanais completos com variedade nutricional
-- Sugestões baseadas em restrições alimentares específicas
-- Integração com base de dados nutricional da Spoonacular
-
-### Pesquisa de Receitas
-- Busca avançada por ingredientes disponíveis
-- Filtros por tipo de dieta (vegetariana, vegana, sem glúten, etc.)
-- Informações nutricionais detalhadas
-- Tempo de preparação e dificuldade
+- Criação de perfil com dados pessoais e objetivos calóricos  
+- Geração de planos de refeições diários e semanais  
+- Pesquisa de receitas por ingredientes e tipo de dieta  
+- Informações nutricionais detalhadas  
 
 ---
 
-## Requisitos do Sistema
+## Requisitos
 
-### Software Necessário
-- Python 3.8 ou superior
-- pip (gestor de pacotes Python)
-- Navegador web moderno
-
-### Dependências Externas
-- Conta activa na [RapidAPI](https://rapidapi.com/)
-- Subscrição da API Spoonacular através da RapidAPI
-- Chave de API válida
-
-### Ambiente de Desenvolvimento (Recomendado)
-- Ambiente virtual Python (venv)
-- Editor de código (VS Code, PyCharm, etc.)
+- Python 3.8+  
+- Conta na RapidAPI com chave válida para Spoonacular  
 
 ---
 
 ## Instalação
 
-### 1. Obter o Código Fonte
-```bash
-git clone https://github.com/seu-usuario/gerador-planos-refeicoes.git
-cd gerador-planos-refeicoes
-```
+1. Clonar o repositório:  
+   ```bash
+   git clone https://github.com/GonZiin/Meal-Planner.git
+   cd Meal-Planner
+````
 
-### 2. Configurar Ambiente Virtual
-```bash
-# Criar ambiente virtual
-python -m venv venv
+2. Criar e ativar ambiente virtual:
 
-# Activar ambiente virtual
-# Linux/macOS:
-source venv/bin/activate
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   ```
 
-# Windows:
-venv\Scripts\activate
-```
+3. Instalar dependências:
 
-### 3. Instalar Dependências
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 4. Configurar Variáveis de Ambiente
-Crie um ficheiro `.env` na raiz do projecto:
-```env
-RAPIDAPI_KEY=sua_chave_da_rapidapi
-FLASK_ENV=development
-FLASK_DEBUG=True
-SECRET_KEY=sua_chave_secreta_aqui
-```
+4. Criar arquivo `.env` com as variáveis:
+
+   ```
+   RAPIDAPI_KEY=sua_chave
+   SECRET_KEY=sua_chave_secreta
+   FLASK_ENV=development
+   ```
 
 ---
 
-## Configuração da API
+## Uso
 
-### Obter Chave da RapidAPI
-1. Registe-se em [RapidAPI](https://rapidapi.com/)
-2. Procure pela API "Spoonacular"
-3. Subscreva um plano (gratuito disponível)
-4. Copie a sua chave de API
-5. Adicione a chave ao ficheiro `.env`
+Executar:
 
-### Limites da API Gratuita
-A versão gratuita da Spoonacular permite:
-- 150 pedidos por dia
-- Acesso a funcionalidades básicas
-- Informações nutricionais limitadas
-
----
-
-## Execução
-
-### Modo de Desenvolvimento
 ```bash
-# Certificar que o ambiente virtual está activo
-source venv/bin/activate  # ou venv\Scripts\activate no Windows
-
-# Executar a aplicação
 flask run
 ```
 
-### Acesso à Aplicação
-Abra o navegador e aceda a: [http://localhost:5000](http://localhost:5000)
+Abrir [http://localhost:5000](http://localhost:5000) no navegador.
 
 ---
 
-## Estrutura do Projecto
+## Tecnologias
 
-```
-gerador-planos-refeicoes/
-├── app.py                 # Aplicação principal Flask
-├── config.py             # Configurações da aplicação
-├── requirements.txt      # Dependências Python
-├── .env                  # Variáveis de ambiente (não incluído no git)
-├── static/              # Ficheiros estáticos (CSS, JS, imagens)
-│   ├── css/
-│   ├── js/
-│   └── images/
-├── templates/           # Templates HTML
-│   ├── base.html
-│   ├── index.html
-│   ├── perfil.html
-│   └── planos.html
-└── utils/              # Módulos auxiliares
-    ├── api_client.py
-    ├── calculations.py
-    └── validators.py
-```
-
----
-
-## Utilização
-
-### 1. Criar Perfil
-- Aceda à página de registo
-- Introduza os seus dados pessoais
-- Defina as suas preferências alimentares
-- Estabeleça os seus objectivos calóricos
-
-### 2. Gerar Plano de Refeições
-- Seleccione o tipo de plano (diário/semanal)
-- Escolha as restrições alimentares
-- Clique em "Gerar Plano"
-- Visualize as sugestões personalizadas
-
-### 3. Explorar Receitas
-- Utilize a funcionalidade de pesquisa
-- Filtre por ingredientes ou tipo de dieta
-- Aceda às informações nutricionais detalhadas
-
----
-
-## Tecnologias Utilizadas
-
-### Backend
-- **Python 3.8+** - Linguagem de programação principal
-- **Flask** - Framework web minimalista
-- **Requests** - Cliente HTTP para consumo de APIs
-- **Python-dotenv** - Gestão de variáveis de ambiente
-
-### Frontend
-- **HTML5** - Estrutura das páginas web
-- **CSS3** - Estilização e layout responsivo
-- **JavaScript** - Interactividade do lado do cliente
-- **Bootstrap** - Framework CSS para design responsivo
-
-### APIs Externas
-- **Spoonacular API** - Base de dados de receitas e informações nutricionais
-- **RapidAPI** - Plataforma de gestão de APIs
-
----
-
-## Desenvolvimento e Contribuições
-
-### Configuração para Desenvolvimento
-```bash
-# Instalar dependências adicionais de desenvolvimento
-pip install -r requirements-dev.txt
-
-# Executar testes
-python -m pytest
-
-# Verificar qualidade do código
-flake8 app.py
-```
-
-### Directrizes de Contribuição
-- Siga as convenções PEP 8 para código Python
-- Documente todas as funções e classes
-- Inclua testes para novas funcionalidades
-- Mantenha o README actualizado
-
----
-
-## Resolução de Problemas
-
-### Problemas Comuns
-
-**Erro de Chave API Inválida**
-- Verifique se a chave está correcta no ficheiro `.env`
-- Confirme que a subscrição da Spoonacular está activa
-
-**Erro de Dependências**
-- Certifique-se de que o ambiente virtual está activo
-- Reinstale as dependências: `pip install -r requirements.txt`
-
-**Problemas de Conectividade**
-- Verifique a ligação à internet
-- Confirme se a API Spoonacular está operacional
-
----
-
-## Licença
-
-Este projecto está licenciado sob a Licença MIT. Consulte o ficheiro `LICENSE` para mais detalhes.
+* Python, Flask
+* Bootstrap para interface
+* Spoonacular API para receitas
 
 ---
 
 ## Contacto
 
-**Desenvolvedor**: Gonçalo Gomes  
-**Email**: [goncalogomespessoal@outlook.pt](mailto:goncalogomespessoal@outlook.pt)  
-**Universidade**: [UTAD]  
-**Curso**: [Engenharia Informática]
+Gonçalo Gomes – [goncalogomespessoal@outlook.pt](mailto:goncalogomespessoal@outlook.pt)
 
-Para questões técnicas, sugestões de melhoria ou reportar problemas, não hesite em entrar em contacto.
+```
+
+Se quiseres, posso ajudar a criar também uma versão mais detalhada ou com outra estrutura. Quer que faça?
+```

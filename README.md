@@ -1,5 +1,3 @@
-Claro! Aqui está o README simplificado em formato Markdown (.md):
-
 ````md
 # Meal Planner
 
